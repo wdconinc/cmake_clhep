@@ -16,15 +16,20 @@ do
 	rmdir ${version}
 done
 
-mkdir -p clhep-${version}-build
-cd clhep-${version}-build
-
-echo "Configuring clhep${version}..."
 prefix=/usr/local/clhep/clhep-${version}
-cmake \
- -DCMAKE_INSTALL_PREFIX=${prefix} \
- -DCMAKE_BUILD_TYPE=RelWithDebInfo \
- ../clhep-${version}
+if [ -f clhep-${version}/CMakeLists.txt ] ; then
+	mkdir -p clhep-${version}-build
+	cd clhep-${version}-build
+
+	echo "Configuring clhep${version}..."
+	cmake \
+	 -DCMAKE_INSTALL_PREFIX=${prefix} \
+	 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+	 ../clhep-${version}
+else
+	cd clhep-${version}
+	./configure --prefix=${prefix}
+fi
 
 j=`cat /proc/cpuinfo | grep processor | wc -l`
 echo "Make will use $j parallel jobs."
